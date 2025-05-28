@@ -2,6 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include<QtCharts>
+#include<QChartView>
+#include<QBarSet>
+#include<QBarSeries>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
