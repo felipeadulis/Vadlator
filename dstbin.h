@@ -19,9 +19,16 @@ public:
     //Seters
     void setN(int n);
 
-    void setSuc(int p);
+    void setSuc(int suc);
 
     //Geters
+    float getMed();
+
+    float getVar();
+
+    float getDesvPad();
+
+    float getCv();
 
     //Metodos
     void calc();

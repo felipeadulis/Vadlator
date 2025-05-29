@@ -10,10 +10,34 @@ void dstBin::setN(int n)
     this->n = n;
 }
 
-void dstBin::setSuc(int p)
+void dstBin::setSuc(int suc)
 {
-    this->p = p;
+    this->suc = suc;
 }
+
+//Geters
+
+float dstBin::getMed()
+{
+    return med;
+}
+
+float dstBin::getVar()
+{
+    return var;
+}
+
+float dstBin::getDesvPad()
+{
+    return desvPad;
+}
+
+float dstBin::getCv()
+{
+    return cv;
+}
+
+//Metodos
 
 void dstBin::calc()
 {
@@ -36,4 +60,5 @@ void dstBin::calc()
 
 }
 
-//Metodos
+
+

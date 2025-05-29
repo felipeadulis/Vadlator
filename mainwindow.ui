@@ -17,10 +17,10 @@
    <widget class="QWidget" name="verticalLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>80</y>
+      <x>10</x>
+      <y>10</y>
       <width>293</width>
-      <height>101</height>
+      <height>231</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -35,7 +35,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Tipo de distribuição:</string>
+          <string>Tipo de distribuição</string>
          </property>
         </widget>
        </item>
@@ -100,6 +100,100 @@
          </item>
          <item>
           <widget class="QLineEdit" name="sucessos"/>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QCheckBox" name="medCheck">
+           <property name="text">
+            <string>Média</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="med">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <item>
+          <widget class="QCheckBox" name="varCheck">
+           <property name="text">
+            <string>Variância</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="var">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_7">
+         <item>
+          <widget class="QCheckBox" name="desvPadCheck">
+           <property name="text">
+            <string>Desvio padrão</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="desvPad">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <item>
+          <widget class="QCheckBox" name="cvCheck">
+           <property name="text">
+            <string>Coeficiente de variação</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="cv">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_11">
+         <item>
+          <widget class="QCheckBox" name="grafCheck">
+           <property name="text">
+            <string>Gráfico</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>

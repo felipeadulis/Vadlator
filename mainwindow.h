@@ -21,6 +21,22 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void clearDstBinValues();
+    void refreshDstBinValues();
+
+private slots:
+    void on_tentativas_editingFinished();
+
+    void on_sucessos_editingFinished();
+
+    void on_medCheck_checkStateChanged(const Qt::CheckState &arg1);
+
+    void on_varCheck_checkStateChanged(const Qt::CheckState &arg1);
+
+    void on_desvPadCheck_checkStateChanged(const Qt::CheckState &arg1);
+
+    void on_cvCheck_checkStateChanged(const Qt::CheckState &arg1);
+
 private:
     Ui::MainWindow *ui;
 };
