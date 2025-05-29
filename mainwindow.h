@@ -25,10 +25,6 @@ public:
     void refreshDstBinValues();
 
 private slots:
-    void on_tentativas_editingFinished();
-
-    void on_sucessos_editingFinished();
-
     void on_medCheck_checkStateChanged(const Qt::CheckState &arg1);
 
     void on_varCheck_checkStateChanged(const Qt::CheckState &arg1);
@@ -39,7 +35,12 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void on_tentativas_textEdited(const QString &arg1);
+
+    void on_sucessos_textEdited(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
+    bool inputValuesChanged = 1;
 };
 #endif // MAINWINDOW_H
