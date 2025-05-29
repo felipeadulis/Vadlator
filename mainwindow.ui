@@ -19,8 +19,8 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>293</width>
-      <height>231</height>
+      <width>361</width>
+      <height>232</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -46,6 +46,9 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
          </property>
          <item>
           <property name="text">
@@ -112,7 +115,7 @@
          <item>
           <widget class="QCheckBox" name="medCheck">
            <property name="text">
-            <string>Média</string>
+            <string>Média:</string>
            </property>
           </widget>
          </item>
@@ -130,7 +133,7 @@
          <item>
           <widget class="QCheckBox" name="varCheck">
            <property name="text">
-            <string>Variância</string>
+            <string>Variância:</string>
            </property>
           </widget>
          </item>
@@ -148,7 +151,7 @@
          <item>
           <widget class="QCheckBox" name="desvPadCheck">
            <property name="text">
-            <string>Desvio padrão</string>
+            <string>Desvio padrão:</string>
            </property>
           </widget>
          </item>
@@ -166,7 +169,7 @@
          <item>
           <widget class="QCheckBox" name="cvCheck">
            <property name="text">
-            <string>Coeficiente de variação</string>
+            <string>Coeficiente de variação:</string>
            </property>
           </widget>
          </item>
@@ -189,13 +192,43 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string/>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
-          </widget>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QPushButton" name="pushButton">
+         <property name="text">
+          <string>Calcular</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Orientation::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </item>

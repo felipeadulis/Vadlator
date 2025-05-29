@@ -16,6 +16,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    QIntValidator *intValidator = new QIntValidator(0,99999,this);
+
+    ui->tentativas->setValidator(intValidator);
+    ui->sucessos->setValidator(intValidator);
+
 }
 
 MainWindow::~MainWindow()
@@ -85,5 +90,15 @@ void MainWindow::on_desvPadCheck_checkStateChanged(const Qt::CheckState &arg1)
 void MainWindow::on_cvCheck_checkStateChanged(const Qt::CheckState &arg1)
 {
     arg1 == Qt::Checked ? ui->cv->setText(brasil.toString(dstBin1.getCv(), 'f', 2)) : ui->cv->clear();
+}
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    if((ui->tentativas->text()!="") && (ui->tentativas->text()!="") && (brasil.toInt(ui->tentativas->text())))
+    {
+        refreshDstBinValues();
+    }
+
 }
 

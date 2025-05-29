@@ -37,6 +37,8 @@ private slots:
 
     void on_cvCheck_checkStateChanged(const Qt::CheckState &arg1);
 
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
