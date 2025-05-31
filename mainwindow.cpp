@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->newLine, &QPushButton::clicked, this, &MainWindow::newLine);
     newLine();
 
+
 }
 
 MainWindow::~MainWindow()
@@ -134,7 +135,7 @@ void MainWindow::newLine()
     minimo->setPlaceholderText("Mínimo");
 
     QComboBox* comparacao = new QComboBox();
-    comparacao->addItems({"Exatamente", "No mínimo", "Mais de", "No máximo",
+    comparacao->addItems({"Igual a", "No mínimo", "Mais de", "No máximo",
                           "Menos de", "Entre - e", "De - a"});
 
     QLineEdit* maximo = new QLineEdit();
