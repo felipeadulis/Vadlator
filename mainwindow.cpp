@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    QIntValidator *intValidator = new QIntValidator(0,99999,this);
+    QIntValidator *intValidator = new QIntValidator(0,9999,this);
 
     ui->tentativas->setValidator(intValidator);
     ui->sucessos->setValidator(intValidator);
@@ -131,23 +131,51 @@ void MainWindow::newLine()
     QPushButton* deleteLineBtn = new QPushButton("-");
     deleteLineBtn->setFixedWidth(25);
 
-    QLineEdit* minimo = new QLineEdit();
-    minimo->setPlaceholderText("Mínimo");
-
     QComboBox* comparacao = new QComboBox();
     comparacao->addItems({"Igual a", "No mínimo", "Mais de", "No máximo",
-                          "Menos de", "Entre - e", "De - a"});
+                          "Menos de", "Entre", "De"});
+
+    QLineEdit* minimo = new QLineEdit();
+    //minimo->setPlaceholderText("Mínimo");
+
+    QLabel* comparacao2 = new QLabel();
 
     QLineEdit* maximo = new QLineEdit();
-    maximo->setPlaceholderText("Máximo");
+    //maximo->setPlaceholderText("Máximo");
 
     layout->addWidget(deleteLineBtn);
-    layout->addWidget(minimo);
     layout->addWidget(comparacao);
+    layout->addWidget(minimo);
+    layout->addWidget(comparacao2);
     layout->addWidget(maximo);
+
+    maximo->hide();
+    comparacao2->hide();
 
     // Adiciona o container ao layout principal
     ui->verticalLayoutProb->addWidget(container);
+
+
+    connect(comparacao, &QComboBox::highlighted, this, [this, comparacao, container, maximo, comparacao2](int index) {
+        if(index >= 0 && index <= 4)
+        {
+            maximo->hide();
+            comparacao2->hide();
+        }
+        else if(index == 5)
+        {
+            maximo->show();
+            comparacao2->setText("e");
+            comparacao2->show();
+
+        }
+        else
+        {
+            maximo->show();
+            comparacao2->setText("a");
+            comparacao2->show();
+        }
+    });
 
     // Quando clicar no botão "-", remover essa linha
     connect(deleteLineBtn, &QPushButton::clicked, this, [this, container]() {
