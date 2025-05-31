@@ -22,6 +22,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tentativas->setValidator(intValidator);
     ui->sucessos->setValidator(intValidator);
 
+    connect(ui->newLine, &QPushButton::clicked, this, &MainWindow::newLine);
+    newLine();
+
 }
 
 MainWindow::~MainWindow()
@@ -115,4 +118,46 @@ void MainWindow::on_sucessos_textEdited(const QString &arg1)
     clearDstBinValues();
     inputValuesChanged = 1;
 }
+
+
+void MainWindow::newLine()
+{
+    QWidget* container = new QWidget(this);
+    QHBoxLayout* layout = new QHBoxLayout(container);
+    layout->setContentsMargins(0, 0, 0, 0);
+
+    //Botão para remover esta linha
+    QPushButton* deleteLineBtn = new QPushButton("-");
+    deleteLineBtn->setFixedWidth(25);
+
+    QLineEdit* minimo = new QLineEdit();
+    minimo->setPlaceholderText("Mínimo");
+
+    QComboBox* comparacao = new QComboBox();
+    comparacao->addItems({"Exatamente", "No mínimo", "Mais de", "No máximo",
+                          "Menos de", "Entre - e", "De - a"});
+
+    QLineEdit* maximo = new QLineEdit();
+    maximo->setPlaceholderText("Máximo");
+
+    layout->addWidget(deleteLineBtn);
+    layout->addWidget(minimo);
+    layout->addWidget(comparacao);
+    layout->addWidget(maximo);
+
+    // Adiciona o container ao layout principal
+    ui->verticalLayoutProb->addWidget(container);
+
+    // Quando clicar no botão "-", remover essa linha
+    connect(deleteLineBtn, &QPushButton::clicked, this, [this, container]() {
+        deleteLine(container);
+    });
+}
+
+void MainWindow::deleteLine(QWidget* container)
+{
+    ui->verticalLayoutProb->removeWidget(container);
+    container->deleteLater();
+}
+
 

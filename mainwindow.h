@@ -6,6 +6,7 @@
 #include<QChartView>
 #include<QBarSet>
 #include<QBarSeries>
+#include <QList>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -42,5 +43,8 @@ private slots:
 private:
     Ui::MainWindow *ui;
     bool inputValuesChanged = 1;
+
+    void newLine();
+    void deleteLine(QWidget* container);
 };
 #endif // MAINWINDOW_H
