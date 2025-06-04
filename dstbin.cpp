@@ -37,6 +37,11 @@ float dstBin::getCv()
     return cv;
 }
 
+double dstBin::getP(int i)
+{
+    return P[i];
+}
+
 //Metodos
 
 void dstBin::calc()
@@ -52,10 +57,10 @@ void dstBin::calc()
     for(int x = 0; x <= n; x++)
         {
             int k = x;
-            if (x > n-x) k = n-x;
+            //if (x > n-x) k = n-x;
             unsigned long long res = 1;
             for (int i = 1; i <= k; i++) res = (res*(n-k + i))/i;
-            P[x] = res*pow(p, x)*pow(q, n-x);
+            P[x] = (res*pow(p, x)*pow(q, n-x))*100;
         }
 
 }

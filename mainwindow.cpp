@@ -100,6 +100,58 @@ void MainWindow::on_pushButton_clicked()
         {
             refreshDstBinValues();
             inputValuesChanged = 0;
+
+            int n = brasil.toInt(ui->tentativas->text());
+            for(int i=0; i < layouts.size(); i++)
+            {
+                QHBoxLayout* layout = layouts.at(i);
+                QComboBox* comparacao = qobject_cast<QComboBox*>(layout->itemAt(1)->widget());
+                uint8_t comparacaoIndex = comparacao->currentIndex();
+                QLineEdit* minimo = qobject_cast<QLineEdit*>(layout->itemAt(2)->widget());
+                int valorMinimo = brasil.toInt(minimo->text());
+                QLineEdit* maximo = qobject_cast<QLineEdit*>(layout->itemAt(4)->widget());
+                int valorMaximo = brasil.toInt(maximo->text());
+                QLabel* resultado = qobject_cast<QLabel*>(layout->itemAt(5)->widget());
+
+                float somaProb = 0;
+                switch(comparacaoIndex)
+                {
+                case 0: //Igual a
+                    resultado->setText(brasil.toString((dstBin1.getP(valorMinimo)), 'f', 2) + " %");
+                    break;
+
+                case 1: //No mínimo
+                    for(int x = valorMinimo; x <= n; x++) somaProb += dstBin1.getP(x);
+                    resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
+                    break;
+
+                case 2: //Mais de
+                    for(int x = valorMinimo+1; x <= n; x++) somaProb += dstBin1.getP(x);
+                    resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
+                    break;
+
+                case 3: //No máximo
+                    for(int x = 0; x <= valorMinimo; x++) somaProb += dstBin1.getP(x);
+                    resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
+                    break;
+
+                case 4: //Menos de
+                    for(int x = 0; x <= valorMinimo-1; x++) somaProb += dstBin1.getP(x);
+                    resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
+                    break;
+
+                case 5: //De - a
+                    for(int x = valorMinimo; x <= valorMaximo; x++) somaProb += dstBin1.getP(x);
+                    resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
+                    break;
+
+                case 6: //Entre e
+                    for(int x = valorMinimo+1; x <= valorMaximo-1; x++) somaProb += dstBin1.getP(x);
+                    resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
+                    break;
+
+                }
+            }
         }
     }
 
@@ -133,7 +185,7 @@ void MainWindow::newLine()
 
     QComboBox* comparacao = new QComboBox();
     comparacao->addItems({"Igual a", "No mínimo", "Mais de", "No máximo",
-                          "Menos de", "Entre", "De"});
+                          "Menos de", "De", "Entre"});
 
     QLineEdit* minimo = new QLineEdit();
     //minimo->setPlaceholderText("Mínimo");
@@ -143,11 +195,17 @@ void MainWindow::newLine()
     QLineEdit* maximo = new QLineEdit();
     //maximo->setPlaceholderText("Máximo");
 
+    QLabel* resultado = new QLabel();
+    resultado->setFixedSize(70, 25);
+
+    layouts.append(layout);
+
     layout->addWidget(deleteLineBtn);
     layout->addWidget(comparacao);
     layout->addWidget(minimo);
     layout->addWidget(comparacao2);
     layout->addWidget(maximo);
+    layout->addWidget(resultado);
 
     maximo->hide();
     comparacao2->hide();
@@ -165,14 +223,14 @@ void MainWindow::newLine()
         else if(index == 5)
         {
             maximo->show();
-            comparacao2->setText("e");
+            comparacao2->setText("a");
             comparacao2->show();
 
         }
         else
         {
             maximo->show();
-            comparacao2->setText("a");
+            comparacao2->setText("e");
             comparacao2->show();
         }
     });

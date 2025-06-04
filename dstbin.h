@@ -30,6 +30,8 @@ public:
 
     float getCv();
 
+    double getP(int i);
+
     //Metodos
     void calc();
 
