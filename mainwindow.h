@@ -44,7 +44,7 @@ private:
     Ui::MainWindow *ui;
     bool inputValuesChanged = 1;
 
-    QVector<QHBoxLayout*> layouts;
+    QVector<QWidget*> containers;
 
     void newLine();
     void deleteLine(QWidget* container);

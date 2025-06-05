@@ -102,9 +102,10 @@ void MainWindow::on_pushButton_clicked()
             inputValuesChanged = 0;
 
             int n = brasil.toInt(ui->tentativas->text());
-            for(int i=0; i < layouts.size(); i++)
+            for(int i=0; i < containers.size(); i++)
             {
-                QHBoxLayout* layout = layouts.at(i);
+                QWidget* container = containers.at(i);
+                QHBoxLayout* layout = qobject_cast<QHBoxLayout*>(container->layout());
                 QComboBox* comparacao = qobject_cast<QComboBox*>(layout->itemAt(1)->widget());
                 uint8_t comparacaoIndex = comparacao->currentIndex();
                 QLineEdit* minimo = qobject_cast<QLineEdit*>(layout->itemAt(2)->widget());
@@ -162,6 +163,15 @@ void MainWindow::on_tentativas_textEdited(const QString &arg1)
 {
     clearDstBinValues();
     inputValuesChanged = 1;
+    qDebug() << containers.size();
+
+    if (containers.size() > 1)
+    {
+        for(int i = containers.size()-1; i >= 1; i--)
+        {
+            deleteLine(containers.at(i));
+        }
+    }
 
 }
 
@@ -170,6 +180,15 @@ void MainWindow::on_sucessos_textEdited(const QString &arg1)
 {
     clearDstBinValues();
     inputValuesChanged = 1;
+    qDebug() << containers.size();
+
+    if (containers.size() > 1)
+    {
+        for(int i = containers.size()-1; i >= 1; i--)
+        {
+            deleteLine(containers.at(i));
+        }
+    }
 }
 
 
@@ -198,7 +217,7 @@ void MainWindow::newLine()
     QLabel* resultado = new QLabel();
     resultado->setFixedSize(70, 25);
 
-    layouts.append(layout);
+    containers.append(container);
 
     layout->addWidget(deleteLineBtn);
     layout->addWidget(comparacao);
@@ -244,6 +263,7 @@ void MainWindow::newLine()
 void MainWindow::deleteLine(QWidget* container)
 {
     ui->verticalLayoutProb->removeWidget(container);
+    containers.removeOne(container);
     container->deleteLater();
 }
 
