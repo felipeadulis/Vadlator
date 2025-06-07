@@ -48,5 +48,9 @@ private:
 
     void newLine();
     void deleteLine(QWidget* container);
+
+    void refreshProb(int i);
+
+    QIntValidator *intValidator;
 };
 #endif // MAINWINDOW_H

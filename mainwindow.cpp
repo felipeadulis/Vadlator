@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    QIntValidator *intValidator = new QIntValidator(0,9999,this);
+    intValidator = new QIntValidator(0,9999,this);
 
     ui->tentativas->setValidator(intValidator);
     ui->sucessos->setValidator(intValidator);
@@ -86,74 +86,84 @@ void MainWindow::on_cvCheck_checkStateChanged(const Qt::CheckState &arg1)
 
 void MainWindow::on_pushButton_clicked()
 {
-    if((ui->tentativas->text()!="") && (ui->sucessos->text()!=""))
+    if((ui->tentativas->text()=="") || (ui->sucessos->text()==""))
     {
-        if(brasil.toInt(ui->sucessos->text())==0)
+        QMessageBox::warning(this, "Aviso", "Digite o número de tentativas e sucessos!");
+    }
+    else if(brasil.toInt(ui->sucessos->text())==0)
+    {
+        QMessageBox::warning(this, "Aviso", "Divisão por zero!");
+    }
+    else if (brasil.toInt(ui->sucessos->text()) > brasil.toInt(ui->tentativas->text()))
+    {
+        QMessageBox::warning(this, "Aviso", "Número de sucessos maior que número de tentativas!");
+    }
+    else
+    {
+        refreshDstBinValues();
+        inputValuesChanged = 0;
+
+        for(int i=0; i < containers.size(); i++)
         {
-            QMessageBox::warning(this, "Aviso", "Divisão por zero!");
+            refreshProb(i);
         }
-        else if (brasil.toInt(ui->sucessos->text()) > brasil.toInt(ui->tentativas->text()))
+    }
+}
+
+void MainWindow::refreshProb(int i)
+{
+    int n = brasil.toInt(ui->tentativas->text());
+    QWidget* container = containers.at(i);
+    QHBoxLayout* layout = qobject_cast<QHBoxLayout*>(container->layout());
+    QLineEdit* minimo = qobject_cast<QLineEdit*>(layout->itemAt(2)->widget());
+    QLineEdit* maximo = qobject_cast<QLineEdit*>(layout->itemAt(4)->widget());
+    if (minimo->text() != "" || maximo->text() != "")
+    {
+        int valorMinimo = brasil.toInt(minimo->text());
+        int valorMaximo = brasil.toInt(maximo->text());
+        QLabel* resultado = qobject_cast<QLabel*>(layout->itemAt(5)->widget());
+        QComboBox* comparacao = qobject_cast<QComboBox*>(layout->itemAt(1)->widget());
+        uint8_t comparacaoIndex = comparacao->currentIndex();
+
+        float somaProb = 0;
+        switch(comparacaoIndex)
         {
-            QMessageBox::warning(this, "Aviso", "Número de sucessos maior que número de tentativas!");
+        case 0: //Igual a
+            resultado->setText(brasil.toString((dstBin1.getP(valorMinimo)), 'f', 2) + " %");
+            break;
+
+        case 1: //No mínimo
+            for(int x = valorMinimo; x <= n; x++) somaProb += dstBin1.getP(x);
+            resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
+            break;
+
+        case 2: //Mais de
+            for(int x = valorMinimo+1; x <= n; x++) somaProb += dstBin1.getP(x);
+            resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
+            break;
+
+        case 3: //No máximo
+            for(int x = 0; x <= valorMinimo; x++) somaProb += dstBin1.getP(x);
+            resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
+            break;
+
+        case 4: //Menos de
+            for(int x = 0; x <= valorMinimo-1; x++) somaProb += dstBin1.getP(x);
+            resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
+            break;
+
+        case 5: //De - a
+            for(int x = valorMinimo; x <= valorMaximo; x++) somaProb += dstBin1.getP(x);
+            resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
+            break;
+
+        case 6: //Entre e
+            for(int x = valorMinimo+1; x <= valorMaximo-1; x++) somaProb += dstBin1.getP(x);
+            resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
+            break;
+
         }
-        else
-        {
-            refreshDstBinValues();
-            inputValuesChanged = 0;
 
-            int n = brasil.toInt(ui->tentativas->text());
-            for(int i=0; i < containers.size(); i++)
-            {
-                QWidget* container = containers.at(i);
-                QHBoxLayout* layout = qobject_cast<QHBoxLayout*>(container->layout());
-                QComboBox* comparacao = qobject_cast<QComboBox*>(layout->itemAt(1)->widget());
-                uint8_t comparacaoIndex = comparacao->currentIndex();
-                QLineEdit* minimo = qobject_cast<QLineEdit*>(layout->itemAt(2)->widget());
-                int valorMinimo = brasil.toInt(minimo->text());
-                QLineEdit* maximo = qobject_cast<QLineEdit*>(layout->itemAt(4)->widget());
-                int valorMaximo = brasil.toInt(maximo->text());
-                QLabel* resultado = qobject_cast<QLabel*>(layout->itemAt(5)->widget());
-
-                float somaProb = 0;
-                switch(comparacaoIndex)
-                {
-                case 0: //Igual a
-                    resultado->setText(brasil.toString((dstBin1.getP(valorMinimo)), 'f', 2) + " %");
-                    break;
-
-                case 1: //No mínimo
-                    for(int x = valorMinimo; x <= n; x++) somaProb += dstBin1.getP(x);
-                    resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
-                    break;
-
-                case 2: //Mais de
-                    for(int x = valorMinimo+1; x <= n; x++) somaProb += dstBin1.getP(x);
-                    resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
-                    break;
-
-                case 3: //No máximo
-                    for(int x = 0; x <= valorMinimo; x++) somaProb += dstBin1.getP(x);
-                    resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
-                    break;
-
-                case 4: //Menos de
-                    for(int x = 0; x <= valorMinimo-1; x++) somaProb += dstBin1.getP(x);
-                    resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
-                    break;
-
-                case 5: //De - a
-                    for(int x = valorMinimo; x <= valorMaximo; x++) somaProb += dstBin1.getP(x);
-                    resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
-                    break;
-
-                case 6: //Entre e
-                    for(int x = valorMinimo+1; x <= valorMaximo-1; x++) somaProb += dstBin1.getP(x);
-                    resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
-                    break;
-
-                }
-            }
-        }
     }
 
 }
@@ -163,7 +173,6 @@ void MainWindow::on_tentativas_textEdited(const QString &arg1)
 {
     clearDstBinValues();
     inputValuesChanged = 1;
-    qDebug() << containers.size();
 
     if (containers.size() > 1)
     {
@@ -172,6 +181,21 @@ void MainWindow::on_tentativas_textEdited(const QString &arg1)
             deleteLine(containers.at(i));
         }
     }
+
+    QWidget* container = containers.at(0);
+    QHBoxLayout* layout = qobject_cast<QHBoxLayout*>(container->layout());
+    QComboBox* comparacao = qobject_cast<QComboBox*>(layout->itemAt(1)->widget());
+    QLineEdit* minimo = qobject_cast<QLineEdit*>(layout->itemAt(2)->widget());
+    QLabel* comparacao2 = qobject_cast<QLabel*>(layout->itemAt(3)->widget());
+    QLineEdit* maximo = qobject_cast<QLineEdit*>(layout->itemAt(4)->widget());
+    QLabel* resultado = qobject_cast<QLabel*>(layout->itemAt(5)->widget());
+
+    comparacao->setCurrentIndex(0);
+    minimo->setText("");
+    maximo->setText("");
+    resultado->setText("");
+    comparacao2->hide();
+    maximo->hide();
 
 }
 
@@ -180,7 +204,6 @@ void MainWindow::on_sucessos_textEdited(const QString &arg1)
 {
     clearDstBinValues();
     inputValuesChanged = 1;
-    qDebug() << containers.size();
 
     if (containers.size() > 1)
     {
@@ -189,6 +212,21 @@ void MainWindow::on_sucessos_textEdited(const QString &arg1)
             deleteLine(containers.at(i));
         }
     }
+
+    QWidget* container = containers.at(0);
+    QHBoxLayout* layout = qobject_cast<QHBoxLayout*>(container->layout());
+    QComboBox* comparacao = qobject_cast<QComboBox*>(layout->itemAt(1)->widget());
+    QLineEdit* minimo = qobject_cast<QLineEdit*>(layout->itemAt(2)->widget());
+    QLabel* comparacao2 = qobject_cast<QLabel*>(layout->itemAt(3)->widget());
+    QLineEdit* maximo = qobject_cast<QLineEdit*>(layout->itemAt(4)->widget());
+    QLabel* resultado = qobject_cast<QLabel*>(layout->itemAt(5)->widget());
+
+    comparacao->setCurrentIndex(0);
+    minimo->setText("");
+    maximo->setText("");
+    resultado->setText("");
+    comparacao2->hide();
+    maximo->hide();
 }
 
 
@@ -208,14 +246,53 @@ void MainWindow::newLine()
 
     QLineEdit* minimo = new QLineEdit();
     //minimo->setPlaceholderText("Mínimo");
+    minimo->setValidator(intValidator);
 
     QLabel* comparacao2 = new QLabel();
 
     QLineEdit* maximo = new QLineEdit();
     //maximo->setPlaceholderText("Máximo");
+    maximo->setValidator(intValidator);
 
     QLabel* resultado = new QLabel();
     resultado->setFixedSize(70, 25);
+
+    int i = containers.size();
+    connect(minimo, &QLineEdit::editingFinished, this, [this, minimo, i, resultado]()
+            {
+                int valor = brasil.toInt(minimo->text());
+                QString n = ui->tentativas->text();
+                if (n != "" && valor > brasil.toInt(n))
+                {
+                    QMessageBox::warning(nullptr, "Aviso", "Valor deve estar entre 0 e " + n);
+                    minimo->clear();
+                    resultado->clear();
+                }
+                else if (inputValuesChanged == 0) refreshProb(i);
+            });
+
+    connect(minimo, &QLineEdit::textEdited, this, [this, resultado]()
+            {
+                resultado->clear();
+            });
+
+    connect(maximo, &QLineEdit::editingFinished, this, [this, maximo, i, resultado]()
+            {
+                int valor = brasil.toInt(maximo->text());
+                QString n = ui->tentativas->text();
+                if (n != "" && valor > brasil.toInt(n))
+                {
+                    QMessageBox::warning(nullptr, "Aviso", "Valor deve estar entre 0 e " + n);
+                    maximo->clear();
+                    resultado->clear();
+                }
+                else if (inputValuesChanged == 0) refreshProb(i);
+            });
+
+    connect(maximo, &QLineEdit::textEdited, this, [this, resultado]()
+            {
+                resultado->clear();
+            });
 
     containers.append(container);
 
@@ -233,7 +310,7 @@ void MainWindow::newLine()
     ui->verticalLayoutProb->addWidget(container);
 
 
-    connect(comparacao, &QComboBox::highlighted, this, [this, comparacao, container, maximo, comparacao2](int index) {
+    connect(comparacao, &QComboBox::highlighted, this, [this, comparacao, container, minimo, maximo, resultado, comparacao2](int index) {
         if(index >= 0 && index <= 4)
         {
             maximo->hide();
@@ -252,6 +329,9 @@ void MainWindow::newLine()
             comparacao2->setText("e");
             comparacao2->show();
         }
+        minimo->clear();
+        maximo->clear();
+        resultado->clear();
     });
 
     // Quando clicar no botão "-", remover essa linha
