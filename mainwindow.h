@@ -22,9 +22,6 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void clearDstBinValues();
-    void refreshDstBinValues();
-
 private slots:
     void on_medCheck_checkStateChanged(const Qt::CheckState &arg1);
 
@@ -40,8 +37,11 @@ private slots:
 
     void on_sucessos_textEdited(const QString &arg1);
 
+    void on_tipoDst_currentIndexChanged(int index);
+
 private:
     Ui::MainWindow *ui;
+
     bool inputValuesChanged = 1;
 
     QVector<QWidget*> containers;
@@ -51,6 +51,14 @@ private:
 
     void refreshProb(int i);
 
+    void clearDstBinValues();
+
+    void refreshDstBinValues();
+
     QIntValidator *intValidator;
+
+    //funcoes distribuição Poisson
+
+
 };
 #endif // MAINWINDOW_H

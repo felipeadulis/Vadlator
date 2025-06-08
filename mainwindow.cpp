@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "dstbin.h"
+#include "dstpoi.h"
 #include<QMessageBox>
 #include <QIntValidator>
 #include <QRegularExpressionValidator>
@@ -10,6 +11,7 @@
 QLocale brasil(QLocale::Portuguese, QLocale::Brazil);
 
 dstBin dstBin1;
+dstPoi dstPoi1;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -17,13 +19,26 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    intValidator = new QIntValidator(0,9999,this);
+    //Começa com binomial
+    ui->stackedWidget->setCurrentIndex(0);
 
+    ////Start binomial
+    intValidator = new QIntValidator(0,9999,this);
     ui->tentativas->setValidator(intValidator);
     ui->sucessos->setValidator(intValidator);
 
     connect(ui->newLine, &QPushButton::clicked, this, &MainWindow::newLine);
     newLine();
+
+    ////Start Poisson
+    QRegularExpression db("^(100([,]0)?|[1-9]?\\d([,]\\d)?)$");
+    QValidator *doubleValidator = new QRegularExpressionValidator(db, this);
+    ui->lambda->setValidator(doubleValidator);
+
+    connect(ui->newLinePoi, &QPushButton::clicked, this, &MainWindow::newLine);
+    newLine();
+
+
 
 
 }
@@ -32,6 +47,9 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+
+////////////////////Funções distribuição binomial/////////////////////////////////////////
 
 
 void MainWindow::clearDstBinValues()
@@ -347,4 +365,23 @@ void MainWindow::deleteLine(QWidget* container)
     container->deleteLater();
 }
 
+
+
+///////////////Troca binomial <-> possion///////////////////////////
+
+void MainWindow::on_tipoDst_currentIndexChanged(int index)
+{
+    ui->stackedWidget->setCurrentIndex(index);
+
+}
+
+///////////////////Funções Poisson//////////////////////////
+
+void MainWindow::clearDstPoiValues()
+{
+    ui->med->clear();
+    ui->var->clear();
+    ui->desvPad->clear();
+    ui->cv->clear();
+}
 
