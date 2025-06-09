@@ -39,6 +39,22 @@ private slots:
 
     void on_tipoDst_currentIndexChanged(int index);
 
+    void on_medCheckPoi_checkStateChanged(const Qt::CheckState &arg1);
+
+    void on_varCheckPoi_checkStateChanged(const Qt::CheckState &arg1);
+
+    void on_desvPadCheckPoi_checkStateChanged(const Qt::CheckState &arg1);
+
+    void on_cvCheckPoi_checkStateChanged(const Qt::CheckState &arg1);
+
+    void on_pushButtonPoi_clicked();
+
+    void on_grafCheckPoi_checkStateChanged(const Qt::CheckState &arg1);
+
+    void on_lambda_textEdited(const QString &arg1);
+
+    void on_nPoi_editingFinished();
+
 private:
     Ui::MainWindow *ui;
 
@@ -57,7 +73,19 @@ private:
 
     QIntValidator *intValidator;
 
-    //funcoes distribuição Poisson
+    //distribuição Poisson
+    bool inputValuesChangedPoi = 1;
+    QVector<QWidget*> containersPoi;
+
+
+    void clearDstPoiValues();
+
+    void refreshDstPoiValues();
+
+    void refreshProbPoi(int i);
+
+    void newLinePoi();
+    void deleteLinePoi(QWidget* container);
 
 
 };

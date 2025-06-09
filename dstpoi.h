@@ -18,6 +18,8 @@ public:
     void setN(int n);
 
     //Geters
+    int getN();
+
     float getLambMedVar();
 
     float getDesvPad();
@@ -29,6 +31,8 @@ public:
     //Métodos
 
     void calc();
+
+    void calcP(bool inputValuesChangedPoi, int newN);
 
 };
 
