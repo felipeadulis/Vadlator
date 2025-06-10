@@ -1,5 +1,5 @@
 QT += core gui widgets charts
-
+CONFIG += debug
 TEMPLATE = app
 TARGET = meu-projeto
 

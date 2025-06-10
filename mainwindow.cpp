@@ -6,6 +6,7 @@
 #include<QLocale>
 #include <QString>
 
+
 QLocale brasil(QLocale::Portuguese, QLocale::Brazil);
 
 MainWindow::MainWindow(QWidget *parent)
@@ -414,7 +415,6 @@ void MainWindow::on_tipoDst_currentIndexChanged(int index)
         ui->cvCheck->setChecked(0);
         ui->grafCheck->setChecked(0);
     }
-    grafico = 0;
 
 }
 
@@ -508,23 +508,26 @@ void MainWindow::on_grafCheckPoi_checkStateChanged(const Qt::CheckState &arg1)
     {
         ui->nLabelPoi->show();
         ui->nPoi->show();
-
-        if (inputValuesChanged == 0)
-        {
-            if(grafico) grafico->show();
-            else
-            {
-                grafico = newChart([this](int x) {return dstPoi1.getP(x);}, brasil.toInt(ui->nPoi->text()));
-                ui->layoutGrafico->addWidget(grafico);
-            }
-        }
     }
+
     else
     {
         ui->nLabelPoi->hide();
         ui->nPoi->hide();
+    }
 
-        if (grafico) grafico->hide();
+    if (inputValuesChangedPoi == 0)
+    {
+        if (arg1 == Qt::Checked)
+        {
+            if (grafico) grafico->show();
+            else
+            {
+                grafico = newChart([this](int x) { return dstPoi1.getP(x); }, brasil.toInt(ui->nPoi->text()));
+                ui->layoutGrafico->addWidget(grafico);
+            }
+        }
+        else if (grafico) grafico->hide();
     }
 
 }
