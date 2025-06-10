@@ -60,7 +60,7 @@ void dstBin::calc()
             //if (x > n-x) k = n-x;
             unsigned long long res = 1;
             for (int i = 1; i <= k; i++) res = (res*(n-k + i))/i;
-            P[x] = (res*pow(p, x)*pow(q, n-x))*100;
+            P[x] = (res*pow(p, x)*pow(q, n-x));
         }
 
 }

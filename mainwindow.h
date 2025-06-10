@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "dstbin.h"
+#include "dstpoi.h"
 #include <QMainWindow>
 #include<QtCharts>
 #include<QChartView>
@@ -55,12 +57,19 @@ private slots:
 
     void on_nPoi_editingFinished();
 
+    void on_grafCheck_checkStateChanged(const Qt::CheckState &arg1);
+
+    void on_nPoi_textEdited(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
 
     bool inputValuesChanged = 1;
 
     QVector<QWidget*> containers;
+
+    dstBin dstBin1;
+    dstPoi dstPoi1;
 
     void newLine();
     void deleteLine(QWidget* container);
@@ -86,6 +95,10 @@ private:
 
     void newLinePoi();
     void deleteLinePoi(QWidget* container);
+
+    QChartView* newChart(std::function<double(int)> getP, int n);
+
+    QChartView* grafico = nullptr;
 
 
 };

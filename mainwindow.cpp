@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include "dstbin.h"
-#include "dstpoi.h"
 #include<QMessageBox>
 #include <QIntValidator>
 #include <QRegularExpressionValidator>
@@ -9,9 +7,6 @@
 #include <QString>
 
 QLocale brasil(QLocale::Portuguese, QLocale::Brazil);
-
-dstBin dstBin1;
-dstPoi dstPoi1;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -34,15 +29,13 @@ MainWindow::MainWindow(QWidget *parent)
     QRegularExpression db("^\\d{1,6}([,]\\d{1,2})?$");
     QValidator *doubleValidator = new QRegularExpressionValidator(db, this);
     ui->lambda->setValidator(doubleValidator);
+    ui->nPoi->setValidator(intValidator);
 
     ui->nLabelPoi->hide();
     ui->nPoi->hide();
 
     connect(ui->newLinePoi, &QPushButton::clicked, this, &MainWindow::newLinePoi);
     newLinePoi();
-
-
-
 
 }
 
@@ -86,6 +79,14 @@ void MainWindow::clearDstBinValues()
     resultado->setText("");
     comparacao2->hide();
     maximo->hide();
+
+    if (grafico)
+    {
+        ui->layoutGrafico->removeWidget(grafico);
+        grafico->deleteLater();
+        grafico = nullptr;
+    }
+
 }
 
 void MainWindow::refreshDstBinValues()
@@ -129,6 +130,23 @@ void MainWindow::on_cvCheck_checkStateChanged(const Qt::CheckState &arg1)
     else ui->cv->clear();
 }
 
+void MainWindow::on_grafCheck_checkStateChanged(const Qt::CheckState &arg1)
+{
+    if (inputValuesChanged == 0)
+    {
+        if((arg1 == Qt::Checked))
+        {
+            if(grafico) grafico->show();
+            else
+            {
+                grafico = newChart([this](int x) {return dstBin1.getP(x);}, brasil.toInt(ui->tentativas->text()));
+                ui->layoutGrafico->addWidget(grafico);
+            }
+        }
+        else if (grafico) grafico->hide();
+    }
+}
+
 
 void MainWindow::on_pushButton_clicked()
 {
@@ -153,6 +171,12 @@ void MainWindow::on_pushButton_clicked()
         {
             refreshProb(i);
         }
+
+        if (ui->grafCheck->isChecked() && grafico == nullptr)
+            {
+                grafico = newChart([this](int x) {return dstBin1.getP(x);}, brasil.toInt(ui->tentativas->text()));
+                ui->layoutGrafico->addWidget(grafico);
+            }
     }
 }
 
@@ -175,37 +199,37 @@ void MainWindow::refreshProb(int i)
         switch(comparacaoIndex)
         {
         case 0: //Igual a
-            resultado->setText(brasil.toString((dstBin1.getP(valorMinimo)), 'f', 2) + " %");
+            resultado->setText(brasil.toString((dstBin1.getP(valorMinimo))*100, 'f', 2) + " %");
             break;
 
         case 1: //No mínimo
             for(int x = valorMinimo; x <= n; x++) somaProb += dstBin1.getP(x);
-            resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
+            resultado->setText(brasil.toString(somaProb*100, 'f', 2) + " %");
             break;
 
         case 2: //Mais de
             for(int x = valorMinimo+1; x <= n; x++) somaProb += dstBin1.getP(x);
-            resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
+            resultado->setText(brasil.toString(somaProb*100, 'f', 2) + " %");
             break;
 
         case 3: //No máximo
             for(int x = 0; x <= valorMinimo; x++) somaProb += dstBin1.getP(x);
-            resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
+            resultado->setText(brasil.toString(somaProb*100, 'f', 2) + " %");
             break;
 
         case 4: //Menos de
             for(int x = 0; x <= valorMinimo-1; x++) somaProb += dstBin1.getP(x);
-            resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
+            resultado->setText(brasil.toString(somaProb*100, 'f', 2) + " %");
             break;
 
         case 5: //De - a
             for(int x = valorMinimo; x <= valorMaximo; x++) somaProb += dstBin1.getP(x);
-            resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
+            resultado->setText(brasil.toString(somaProb*100, 'f', 2) + " %");
             break;
 
         case 6: //Entre e
             for(int x = valorMinimo+1; x <= valorMaximo-1; x++) somaProb += dstBin1.getP(x);
-            resultado->setText(brasil.toString(somaProb, 'f', 2) + " %");
+            resultado->setText(brasil.toString(somaProb*100, 'f', 2) + " %");
             break;
 
         }
@@ -360,12 +384,25 @@ void MainWindow::on_tipoDst_currentIndexChanged(int index)
         ui->nPoi->hide();
         ui->nPoi->setText("10");
         dstPoi1.setN(10);
+
+        ui->medCheckPoi->setChecked(0);
+        ui->varCheckPoi->setChecked(0);
+        ui->desvPadCheckPoi->setChecked(0);
+        ui->cvCheckPoi->setChecked(0);
+        ui->grafCheckPoi->setChecked(0);
     }
     else
     {
         ui->lambda->clear();
         clearDstBinValues();
+
+        ui->medCheck->setChecked(0);
+        ui->varCheck->setChecked(0);
+        ui->desvPadCheck->setChecked(0);
+        ui->cvCheck->setChecked(0);
+        ui->grafCheck->setChecked(0);
     }
+    grafico = 0;
 
 }
 
@@ -402,6 +439,13 @@ void MainWindow::clearDstPoiValues()
     resultado->setText("");
     comparacao2->hide();
     maximo->hide();
+
+    if (grafico)
+    {
+        ui->layoutGrafico->removeWidget(grafico);
+        grafico->deleteLater();
+        grafico = nullptr;
+    }
 }
 
 void MainWindow::refreshDstPoiValues()
@@ -452,12 +496,23 @@ void MainWindow::on_grafCheckPoi_checkStateChanged(const Qt::CheckState &arg1)
     {
         ui->nLabelPoi->show();
         ui->nPoi->show();
+
+        if (inputValuesChanged == 0)
+        {
+            if(grafico) grafico->show();
+            else
+            {
+                grafico = newChart([this](int x) {return dstPoi1.getP(x);}, brasil.toInt(ui->nPoi->text()));
+                ui->layoutGrafico->addWidget(grafico);
+            }
+        }
     }
     else
     {
         ui->nLabelPoi->hide();
         ui->nPoi->hide();
 
+        if (grafico) grafico->hide();
     }
 
 }
@@ -478,7 +533,14 @@ void MainWindow::on_pushButtonPoi_clicked()
         {
             refreshProbPoi(i);
         }
+
+        if (ui->grafCheckPoi->isChecked() && grafico == nullptr)
+        {
+            grafico = newChart([this](int x) {return dstPoi1.getP(x);}, brasil.toInt(ui->nPoi->text()));
+            ui->layoutGrafico->addWidget(grafico);
+        }
     }
+
 
 }
 
@@ -500,7 +562,7 @@ void MainWindow::refreshProbPoi(int i)
         switch(comparacaoIndex)
         {
         case 0: //Igual a
-            resultado->setText(brasil.toString((dstPoi1.getP(valorMinimo)), 'f', 2) + " %");
+            resultado->setText(brasil.toString((dstPoi1.getP(valorMinimo))*100, 'f', 2) + " %");
             break;
 
         case 1: //No mínimo
@@ -655,5 +717,58 @@ void MainWindow::on_lambda_textEdited(const QString &arg1)
 void MainWindow::on_nPoi_editingFinished()
 {
     dstPoi1.calcP(inputValuesChangedPoi, brasil.toInt(ui->nPoi->text()));
+    if(inputValuesChangedPoi == 0)
+    {
+        grafico = newChart([this](int x) {return dstPoi1.getP(x);}, brasil.toInt(ui->nPoi->text()));
+        ui->layoutGrafico->addWidget(grafico);
+    }
 }
+
+void MainWindow::on_nPoi_textEdited(const QString &arg1)
+{
+    if(inputValuesChangedPoi == 0 && grafico)
+    {
+        ui->layoutGrafico->removeWidget(grafico);
+        grafico->deleteLater();
+        grafico = nullptr;
+    }
+}
+
+QChartView* MainWindow::newChart(std::function<double(int)> getP, int n)
+{
+    QBarSet *set = new QBarSet("Probabilidades");
+
+    QStringList categories;
+    for (int i = 0; i <= n; i++) {
+        *set << (getP(i) * 100.0);
+        categories << QString::number(i);
+    }
+
+    QBarSeries *series = new QBarSeries();
+    series->append(set);
+
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->setTitle("Distribuição Discreta");
+    chart->setAnimationOptions(QChart::SeriesAnimations);
+
+    QBarCategoryAxis *axisX = new QBarCategoryAxis();
+    axisX->append(categories);
+    chart->addAxis(axisX, Qt::AlignBottom);
+    series->attachAxis(axisX);
+
+    QValueAxis *axisY = new QValueAxis();
+    axisY->setRange(0, 100);
+    axisY->setLabelFormat("%.2f %%");
+    chart->addAxis(axisY, Qt::AlignLeft);
+    series->attachAxis(axisY);
+
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+    return chartView;
+}
+
+
+
+
 
