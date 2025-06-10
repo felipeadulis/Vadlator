@@ -223,11 +223,23 @@ void MainWindow::refreshProb(int i)
             break;
 
         case 5: //De - a
+            if (valorMinimo > valorMaximo)
+            {
+                int temp = valorMinimo;
+                valorMinimo = valorMaximo;
+                valorMaximo = temp;
+            }
             for(int x = valorMinimo; x <= valorMaximo; x++) somaProb += dstBin1.getP(x);
             resultado->setText(brasil.toString(somaProb*100, 'f', 2) + " %");
             break;
 
         case 6: //Entre e
+            if (valorMinimo > valorMaximo)
+            {
+                int temp = valorMinimo;
+                valorMinimo = valorMaximo;
+                valorMaximo = temp;
+            }
             for(int x = valorMinimo+1; x <= valorMaximo-1; x++) somaProb += dstBin1.getP(x);
             resultado->setText(brasil.toString(somaProb*100, 'f', 2) + " %");
             break;
@@ -586,11 +598,23 @@ void MainWindow::refreshProbPoi(int i)
             break;
 
         case 5: //De - a
+            if (valorMinimo > valorMaximo)
+            {
+                int temp = valorMinimo;
+                valorMinimo = valorMaximo;
+                valorMaximo = temp;
+            }
             for(int x = valorMinimo; x <= valorMaximo; x++) somaProb += dstPoi1.getP(x);
             resultado->setText(brasil.toString(somaProb*100, 'f', 2) + " %");
             break;
 
         case 6: //Entre e
+            if (valorMinimo > valorMaximo)
+            {
+                int temp = valorMinimo;
+                valorMinimo = valorMaximo;
+                valorMaximo = temp;
+            }
             for(int x = valorMinimo+1; x <= valorMaximo-1; x++) somaProb += dstPoi1.getP(x);
             resultado->setText(brasil.toString(somaProb*100, 'f', 2) + " %");
             break;
